@@ -1,6 +1,6 @@
 import React from 'react';
-import { Button } from './Button.styled';
+import { ButtonLM } from './Button.styled';
 
 const Button = () => {
-  return <Button />;
+  return <ButtonLM />;
 };
