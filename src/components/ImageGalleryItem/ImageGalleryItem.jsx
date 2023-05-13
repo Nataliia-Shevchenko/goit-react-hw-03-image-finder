@@ -1,10 +1,12 @@
 import React from 'react';
+import * as basicLightbox from 'basiclightbox';
+import { GalleryItem, GalleryItemImg } from './ImageGalleryItem.styled';
 
-const ImageGalleryItem = ({ items }) => {
+const ImageGalleryItem = ({ urlS, urlL, alt }) => {
   return (
-    <li class="gallery-item">
-      <img src="" alt="" />
-    </li>
+    <GalleryItem>
+      <GalleryItemImg src={urlS} alt={alt} />
+    </GalleryItem>
   );
 };
 
