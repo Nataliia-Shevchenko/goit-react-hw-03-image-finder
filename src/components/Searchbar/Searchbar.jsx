@@ -36,6 +36,7 @@ class Searchbar extends Component {
             autoFocus
             placeholder="Search images and photos"
             onChange={this.handleInputChange}
+            value={this.state.value}
           />
         </SearchForm>
       </Header>
