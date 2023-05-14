@@ -6,13 +6,10 @@ import ImageGallery from './ImageGallery';
 class App extends Component {
   state = {
     searchText: '',
-    
   };
 
   onSubmit = searchText => {
-    
     this.setState({ searchText });
-    console.log(this.state.searchText);
   };
 
   render() {

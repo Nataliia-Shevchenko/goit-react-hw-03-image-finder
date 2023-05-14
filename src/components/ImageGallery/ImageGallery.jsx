@@ -1,43 +1,64 @@
 import React, { Component } from 'react';
-import fetchPictures from '../../services/pixabay-api';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { fetchPictures } from '../../services/pixabay-api';
 import ImageGalleryItem from 'components/ImageGalleryItem';
 import Loader from 'components/Loader';
 import { Gallery } from './ImageGallery.styled';
+import Button from 'components/Button';
 
 class ImageGallery extends Component {
   state = {
-    images: [],
+    images: null,
     loading: false,
+    error: '',
+    page: 1,
   };
 
-  componentDidUpdate(prevProps) {
+  async componentDidUpdate(prevProps) {
     if (prevProps.searchText !== this.props.searchText) {
-      // this.setState({ loading: true });
-      fetchPictures(this.props.searchText).then(data =>
-        this.setState({ images: data.hits })
-      );
-      // this.setState({ loading: false });
+      try {
+        this.setState({ loading: true });
+        const { hits } = await fetchPictures(
+          this.props.searchText,
+          this.state.page
+        );
+        return this.setState({ images: hits });
+        // if (status === 'ok') {
+        //   return this.setState({ images: hits });
+        // }
+        // throw new Error();
+      } catch (error) {
+        this.setState({ error: error.message });
+        console.log(error);
+      } finally {
+        this.setState({ loading: false });
+      }
     }
   }
 
-  render() {
+  handleLoadMoreClick(e) {
+    this.setState({ page: this.state.page + 1 });
+  }
 
-    const {images, loading} = this.state;
+  render() {
+    const { images, loading, error } = this.state;
     return (
       <>
-        {/* {loading && <Loader />} */}
-        {images.length > 0 && (
+        {error && toast.error(error)}
+        {loading && <Loader />}
+        {images?.length === 0 &&
+          toast.error(
+            'Sorry, there are no images matching your search query. Please try again.'
+          )}
+        {images?.length > 0 && (
           <Gallery>
             {this.state.images.map(el => (
-              <ImageGalleryItem
-                key={el.id}
-                urlS={el.webformatURL}
-                urlL={el.largeImageURL}
-                alt={el.tags}
-              />
+              <ImageGalleryItem key={el.id} el={el} />
             ))}
           </Gallery>
         )}
+        {images?.length > 12 && <Button onClick={this.handleLoadMoreClick} />}
       </>
     );
   }
