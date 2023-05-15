@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-// import {ReactComponent as ReactLogo} from '../../images/search-icon.svg'
+import { GoSearch } from 'react-icons/go';
 import {
   Header,
   SearchForm,
@@ -22,7 +22,7 @@ class Searchbar extends Component {
   handleSubmit = e => {
     e.preventDefault();
 
-    if(this.state.value.trim() === ''){
+    if (this.state.value.trim() === '') {
       toast.error('Fill the search form!');
       return;
     }
@@ -36,6 +36,7 @@ class Searchbar extends Component {
       <Header>
         <SearchForm onSubmit={this.handleSubmit}>
           <SearchBtn type="submit">
+            <GoSearch />
             <SearchBtnLabel />
           </SearchBtn>
 

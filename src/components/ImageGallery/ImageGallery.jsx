@@ -7,6 +7,7 @@ import Loader from 'components/Loader';
 import { Gallery } from './ImageGallery.styled';
 import Button from 'components/Button';
 
+
 class ImageGallery extends Component {
   state = {
     images: null,
@@ -38,9 +39,11 @@ class ImageGallery extends Component {
   }
 
   handleLoadMoreClick(e) {
-    this.setState({ page: this.state.page + 1 });
+    this.setState({ page: Number(this.state.page) + 1 });
+    console.log(this.state.page);
   }
 
+  
   render() {
     const { images, loading, error } = this.state;
     return (
@@ -58,7 +61,8 @@ class ImageGallery extends Component {
             ))}
           </Gallery>
         )}
-        {images?.length > 12 && <Button onClick={this.handleLoadMoreClick} />}
+        {images?.length > 0 &&  <Button onClick={this.handleLoadMoreClick} />}
+        
       </>
     );
   }
