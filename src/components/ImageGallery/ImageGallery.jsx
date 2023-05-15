@@ -7,8 +7,8 @@ import Loader from 'components/Loader';
 import { Gallery } from './ImageGallery.styled';
 import Button from 'components/Button';
 
-
 class ImageGallery extends Component {
+  
   state = {
     images: null,
     loading: false,
@@ -16,19 +16,25 @@ class ImageGallery extends Component {
     page: 1,
   };
 
-  async componentDidUpdate(prevProps) {
-    if (prevProps.searchText !== this.props.searchText) {
+  async componentDidUpdate(prevProps, prevState) {
+    if (
+      prevProps.searchText !== this.props.searchText ||
+      prevState.page !== this.state.page
+    ) {
       try {
         this.setState({ loading: true });
         const { hits } = await fetchPictures(
           this.props.searchText,
           this.state.page
         );
-        return this.setState({ images: hits });
-        // if (status === 'ok') {
-        //   return this.setState({ images: hits });
-        // }
-        // throw new Error();
+        if (this.state.images === null) {
+          return this.setState({ images: hits });
+        } else {
+          return this.setState(prevState => ({
+            images: [...prevState.images, ...hits],
+            error: '',
+          }));
+        }
       } catch (error) {
         this.setState({ error: error.message });
         console.log(error);
@@ -38,12 +44,13 @@ class ImageGallery extends Component {
     }
   }
 
-  handleLoadMoreClick(e) {
-    this.setState({ page: Number(this.state.page) + 1 });
+  handleLoadMoreClick = () => {
+    this.setState(prevState => ({
+      page: prevState.page + 1,
+    }));
     console.log(this.state.page);
-  }
+  };
 
-  
   render() {
     const { images, loading, error } = this.state;
     return (
@@ -61,8 +68,7 @@ class ImageGallery extends Component {
             ))}
           </Gallery>
         )}
-        {images?.length > 0 &&  <Button onClick={this.handleLoadMoreClick} />}
-        
+        {images?.length > 0 && <Button onClick={this.handleLoadMoreClick} />}
       </>
     );
   }
