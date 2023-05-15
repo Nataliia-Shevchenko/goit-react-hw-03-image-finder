@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { fetchPictures } from '../../services/pixabay-api';
@@ -8,7 +9,6 @@ import { Gallery } from './ImageGallery.styled';
 import Button from 'components/Button';
 
 class ImageGallery extends Component {
-  
   state = {
     images: null,
     loading: false,
@@ -17,24 +17,33 @@ class ImageGallery extends Component {
   };
 
   async componentDidUpdate(prevProps, prevState) {
-    if (
-      prevProps.searchText !== this.props.searchText ||
-      prevState.page !== this.state.page
-    ) {
+    if (prevProps.searchText !== this.props.searchText) {
       try {
         this.setState({ loading: true });
         const { hits } = await fetchPictures(
           this.props.searchText,
           this.state.page
         );
-        if (this.state.images === null) {
-          return this.setState({ images: hits });
-        } else {
-          return this.setState(prevState => ({
-            images: [...prevState.images, ...hits],
-            error: '',
-          }));
-        }
+        return this.setState({ images: hits });
+      } catch (error) {
+        this.setState({ error: error.message });
+        console.log(error);
+      } finally {
+        this.setState({ loading: false });
+      }
+    }
+
+    if (prevState.page !== this.state.page) {
+      try {
+        this.setState({ loading: true });
+        const { hits } = await fetchPictures(
+          this.props.searchText,
+          this.state.page
+        );
+        return this.setState(prevState => ({
+          images: [...prevState.images, ...hits],
+          error: '',
+        }));
       } catch (error) {
         this.setState({ error: error.message });
         console.log(error);
@@ -48,7 +57,6 @@ class ImageGallery extends Component {
     this.setState(prevState => ({
       page: prevState.page + 1,
     }));
-    console.log(this.state.page);
   };
 
   render() {
@@ -68,10 +76,14 @@ class ImageGallery extends Component {
             ))}
           </Gallery>
         )}
-        {images?.length > 0 && <Button onClick={this.handleLoadMoreClick} />}
+        {images?.length >= 12 && <Button onClick={this.handleLoadMoreClick} />}
       </>
     );
   }
 }
 
 export default ImageGallery;
+
+ImageGallery.propTypes = {
+  searchText: PropTypes.string.isRequired,
+};
