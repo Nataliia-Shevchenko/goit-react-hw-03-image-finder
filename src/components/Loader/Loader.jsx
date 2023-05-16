@@ -6,7 +6,7 @@ return <Watch
   height="80"
   width="80"
   radius="48"
-  color="#4fa94d"
+  color="#0d2de4"
   ariaLabel="watch-loading"
   wrapperStyle={{}}
   wrapperClassName=""

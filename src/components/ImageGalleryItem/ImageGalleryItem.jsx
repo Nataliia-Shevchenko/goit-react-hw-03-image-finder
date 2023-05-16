@@ -20,6 +20,7 @@ export default class ImageGalleryItem extends Component {
 
   render() {
     const { webformatURL, tags, largeImageURL } = this.props.el;
+    const {showModal} = this.state;
     return (
       <>
         <GalleryItem>
@@ -29,7 +30,7 @@ export default class ImageGalleryItem extends Component {
             onClick={this.handleImgClick}
           />
         </GalleryItem>
-        {this.state.showModal && (
+        {showModal && (
           <Modal
             onClose={this.toggleModal}
             src={largeImageURL}
