@@ -25,8 +25,14 @@ class App extends Component {
         this.setState({ loading: true });
         const { hits, totalHits } = await fetchPictures(searchText, page);
 
+        const filtredHits = hits.map(
+          ({ id, largeImageURL, webformatURL, tags }) => {
+            return { id, largeImageURL, webformatURL, tags };
+          }
+        );
+
         return this.setState({
-          images: hits,
+          images: filtredHits,
           totalPages: Math.ceil(totalHits / 12),
         });
       } catch (error) {
@@ -41,8 +47,13 @@ class App extends Component {
       try {
         this.setState({ loading: true });
         const { hits } = await fetchPictures(searchText, page);
+        const filtredHits = hits.map(
+          ({ id, largeImageURL, webformatURL, tags }) => {
+            return { id, largeImageURL, webformatURL, tags };
+          }
+        );
         return this.setState(prevState => ({
-          images: [...prevState.images, ...hits],
+          images: [...prevState.images, ...filtredHits],
           error: '',
         }));
       } catch (error) {
