@@ -24,7 +24,11 @@ class App extends Component {
       try {
         this.setState({ loading: true });
         const { hits, totalHits } = await fetchPictures(searchText, page);
-
+        if (hits.length === 0) {
+          toast.error(
+            'Sorry, there are no images matching your search query. Please try again.'
+          );
+        }
         const filtredHits = hits.map(
           ({ id, largeImageURL, webformatURL, tags }) => {
             return { id, largeImageURL, webformatURL, tags };
@@ -66,7 +70,7 @@ class App extends Component {
   }
 
   onSubmit = searchText => {
-    this.setState({ searchText });
+    this.setState({ searchText, page: 1 });
   };
 
   handleLoadMoreClick = () => {
@@ -82,10 +86,6 @@ class App extends Component {
         <Searchbar onSubmit={this.onSubmit} />
         {error && toast.error(error)}
         {loading && <Loader />}
-        {images?.length === 0 &&
-          toast.error(
-            'Sorry, there are no images matching your search query. Please try again.'
-          )}
         {images?.length > 0 && <ImageGallery images={images} />}
         {images?.length >= 12 && page !== totalPages && (
           <Button onClick={this.handleLoadMoreClick} />
